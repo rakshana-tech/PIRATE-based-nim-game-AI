@@ -122,3 +122,5 @@ pirates-nim/
 4. A player cannot remove coins from multiple heaps in one turn.
 5. The human captain and AI take turns alternatively.
 6. The player who removes the last coin wins the treasure!
+
+Pirate's Nim – AI Strategy Game
