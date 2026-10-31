@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIRATE'S NIM – THE AI TREASURE CHALLENGE</title>
+  <meta name="description" content="A strategic AI-based Nim game. Compete against Captain Grundy using XOR operations, Grundy numbers, and optimal game theory.">
+
+  <!-- Google Fonts: Cinzel, Cinzel Decorative, Plus Jakarta Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;700;800;900&family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+  <div id="app-root">
+
+    <!-- ======================================================================
+         GLOBAL HEADER / NAVIGATION
+         ====================================================================== -->
+    <header class="game-header">
+      <div class="header-brand" id="header-brand-btn" onclick="window.piratesNim.ui.switchScreen('landing')">
+        <div class="brand-icon-wrapper">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d131f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+        </div>
+        <h1 class="brand-title">PIRATE'S NIM</h1>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-nav-rules" class="btn btn-secondary" title="View Game Rules">
+          📜 <span>Rules</span>
+        </button>
+        <button id="btn-nav-restart" class="btn btn-secondary" title="Restart Current Game">
+          🔄 <span>Restart</span>
+        </button>
+        <button id="btn-nav-new-game" class="btn btn-teal" title="Configure New Game">
+          ⚙️ <span>New Game</span>
+        </button>
+        <button id="btn-nav-sound" class="btn btn-icon" title="Toggle Sound Mute">
+          <span id="sound-icon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         SCREEN 1: WELCOME / LANDING PAGE
+         ====================================================================== -->
+    <main id="screen-landing" class="app-screen active">
+      <section class="landing-hero">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span>⚓ Impartial Game Theory • Sprague-Grundy Theorem</span>
+          </div>
+
+          <div class="hero-title-group">
+            <h1 class="hero-main-title">PIRATE'S NIM</h1>
+            <h2 class="hero-subtitle">"Outsmart the AI. Claim the Treasure."</h2>
+          </div>
+
+          <!-- Animated Treasure Chest SVG Illustration -->
+          <div class="hero-chest-container float-animated">
+            <div class="chest-glow-halo"></div>
+            <svg class="hero-chest-svg" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Chest Base -->
+              <rect x="25" y="65" width="150" height="80" rx="10" fill="#3d2314" stroke="#d4af37" stroke-width="4"/>
+              <rect x="25" y="90" width="150" height="12" fill="#24140b"/>
+              <rect x="35" y="65" width="16" height="80" fill="#24140b"/>
+              <rect x="149" y="65" width="16" height="80" fill="#24140b"/>
+              
+              <!-- Chest Lid (Open angled) -->
+              <path d="M20 65 Q100 15 180 65 Z" fill="#4a2c1a" stroke="#d4af37" stroke-width="4"/>
+              <path d="M30 65 Q100 25 170 65" stroke="#f5d76e" stroke-width="2" fill="none"/>
+              
+              <!-- Lock / Hasps -->
+              <rect x="88" y="68" width="24" height="30" rx="4" fill="#d4af37" stroke="#7a5a0c" stroke-width="2"/>
+              <circle cx="100" cy="80" r="4" fill="#24140b"/>
+              
+              <!-- Overflowing Gold Doubloons -->
+              <circle cx="70" cy="62" r="14" fill="#f5d76e" stroke="#c59b27" stroke-width="2"/>
+              <circle cx="95" cy="56" r="16" fill="#ffea79" stroke="#d4af37" stroke-width="2"/>
+              <circle cx="120" cy="60" r="15" fill="#f3c642" stroke="#997a15" stroke-width="2"/>
+              <circle cx="85" cy="48" r="12" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>
+              <circle cx="110" cy="46" r="13" fill="#ffe066" stroke="#b8860b" stroke-width="2"/>
+              
+              <!-- Sparkles -->
+              <path d="M135 30 L138 38 L146 41 L138 44 L135 52 L132 44 L124 41 L132 38 Z" fill="#ffffff"/>
+              <path d="M60 40 L62 46 L68 48 L62 50 L60 56 L58 50 L52 48 L58 46 Z" fill="#ffea79"/>
+            </svg>
+          </div>
+
+          <p class="hero-description">
+            Welcome to the treacherous waters of mathematical strategy. Deep inside the pirate captain's vault lies a fortune guarded by <strong>Captain Grundy</strong>, an unbeatable algorithmic corsair who calculates every move through <strong>Bitwise XOR Parity</strong>. Select heaps, claim doubloons, and solve the zero-sum riddle!
+          </p>
+
+          <div class="hero-cta-group">
+            <button id="btn-start-playing" class="btn btn-primary btn-hero-start">
+              <span>⚔️ START PLAYING</span>
+            </button>
+            <button id="btn-how-to-play-hero" class="btn btn-secondary">
+              <span>📜 How to Play</span>
+            </button>
+          </div>
+
+          <!-- AI Opponent Introduction Card -->
+          <div class="hero-ai-card">
+            <div class="hero-ai-avatar">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f5d76e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="5"></circle>
+                <path d="M20 21a8 8 0 1 0-16 0"></path>
+                <line x1="8" y1="7" x2="16" y2="7"></line>
+                <circle cx="9" cy="9" r="1" fill="#f5d76e"></circle>
+                <circle cx="15" cy="9" r="1" fill="#f5d76e"></circle>
+              </svg>
+            </div>
+            <div class="hero-ai-info">
+              <h4>Meet Your Opponent: Captain Grundy</h4>
+              <p>An intelligent AI tactician powered by Charles Bouton's 1901 Nim-sum theorem and Sprague-Grundy values. Can you reduce the heaps to zero and claim victory?</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         SCREEN 2: GAME RULES PAGE
+         ====================================================================== -->
+    <main id="screen-rules" class="app-screen">
+      <section class="rules-container">
+        <div class="rules-parchment-card">
+          <div class="rules-header">
+            <h2>📜 RULES OF PIRATE'S NIM</h2>
+            <p class="text-muted">Study the ancient corsair code before entering the treasure chamber.</p>
+          </div>
+
+          <div class="rules-grid">
+            <div class="rule-item">
+              <div class="rule-number">1</div>
+              <div class="rule-text">
+                <h4>Multiple Heaps of Treasure</h4>
+                <p>The game board contains multiple distinct heaps of shiny pirate gold coins.</p>
+              </div>
+            </div>
+
+            <div class="rule-item">
+              <div class="rule-number">2</div>
+              <div class="rule-text">
+                <h4>One Heap Per Turn</h4>
+                <p>On your turn, you can select only <strong>ONE</strong> heap from which to take coins.</p>
+              </div>
+            </div>
+
+            <div class="rule-item">
+              <div class="rule-number">3</div>
+              <div class="rule-text">
+                <h4>Take Any Positive Amount</h4>
+                <p>You can remove anywhere from <strong>1 coin up to all coins</strong> in that selected heap.</p>
+              </div>
+            </div>
+
+            <div class="rule-item">
+              <div class="rule-number">4</div>
+              <div class="rule-text">
+                <h4>No Multi-Heap Splitting</h4>
+                <p>A player cannot split their move across multiple heaps in a single turn.</p>
+              </div>
+            </div>
+
+            <div class="rule-item">
+              <div class="rule-number">5</div>
+              <div class="rule-text">
+                <h4>Alternating Turns</h4>
+                <p>The human captain and AI opponent alternate turns with no skipping allowed.</p>
+              </div>
+            </div>
+
+            <div class="rule-item">
+              <div class="rule-number">6</div>
+              <div class="rule-text">
+                <h4>Normal Play Victory</h4>
+                <p>The player who takes the <strong>very last coin</strong> from the board wins the entire pirate treasure!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rules Acceptance Gate -->
+          <div class="rules-acceptance-gate">
+            <label class="checkbox-label" for="check-rules-accepted">
+              <input type="checkbox" id="check-rules-accepted">
+              <span class="checkbox-custom"></span>
+              <span>I have read and understood the rules.</span>
+            </label>
+
+            <div style="display: flex; gap: 14px;">
+              <button id="btn-back-to-welcome" class="btn btn-secondary">
+                <span>← Welcome Page</span>
+              </button>
+              <button id="btn-accept-rules" class="btn btn-primary" disabled>
+                <span>ACCEPT & ENTER GAME →</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         SCREEN 3: GAMEPLAY DASHBOARD (2-COLUMN LAYOUT)
+         ====================================================================== -->
+    <main id="screen-gameplay" class="app-screen">
+      <div class="gameplay-layout">
+        
+        <!-- ==================== LEFT / MAIN AREA ==================== -->
+        <section class="gameplay-main">
+          
+          <!-- Turn Indicator Banner -->
+          <div id="turn-banner" class="turn-banner human-turn">
+            <div class="turn-identity">
+              <div class="turn-avatar-badge" id="turn-avatar">⚔️</div>
+              <div class="turn-details">
+                <h3 id="turn-title">YOUR TURN, CAPTAIN!</h3>
+                <p id="turn-subtitle">Select a heap and choose how many coins to take.</p>
+              </div>
+            </div>
+            <div class="turn-meta">
+              <span id="turn-counter" class="badge badge-gold">Turn #1</span>
+            </div>
+          </div>
+
+          <!-- Heaps Board Display -->
+          <div class="heaps-board glass-panel">
+            <div class="heaps-header">
+              <h3>🪙 Pirate Gold Coin Heaps</h3>
+              <span class="text-muted" style="font-size: 0.85rem;">Click a heap or click coins directly</span>
+            </div>
+
+            <div id="heaps-container" class="heaps-grid">
+              <!-- Dynamically populated by NimUI -->
+            </div>
+          </div>
+
+          <!-- Move Controls Panel -->
+          <div class="move-controls-panel glass-panel">
+            <div class="controls-selection-info">
+              <div>
+                <h4 id="selected-heap-label" class="text-gold">Selected: Heap 1</h4>
+                <p class="text-muted" style="font-size: 0.85rem;">Specify coins to remove</p>
+              </div>
+
+              <div class="selector-counter-group">
+                <button id="btn-counter-minus" class="counter-btn" title="Decrease coins">−</button>
+                <div id="counter-value" class="counter-display">1</div>
+                <button id="btn-counter-plus" class="counter-btn" title="Increase coins">+</button>
+              </div>
+            </div>
+
+            <div class="controls-action-group">
+              <button id="btn-take-coins" class="btn btn-primary btn-remove-coins">
+                <span>💰 REMOVE COINS</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Strategy & Nim-Sum Calculator Panel -->
+          <div class="strategy-panel glass-panel">
+            <div class="panel-header-row">
+              <h3>⚡ Live Bitwise Nim-Sum & Grundy Strategy</h3>
+              <span id="nim-sum-state-badge" class="badge badge-gold">⚔️ UNBALANCED (N-Position)</span>
+            </div>
+
+            <div class="nim-sum-display-box">
+              <div>
+                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Combined Nim-Sum (XOR)</span>
+                <div class="nim-sum-value-hero">
+                  <span id="nim-sum-number" class="nim-sum-number">0</span>
+                  <span id="nim-sum-binary" class="nim-sum-binary">(0000₂)</span>
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 200px; font-size: 0.85rem; color: #cbd5e1; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 16px;">
+                <strong>Mathematical Rule:</strong> When Nim-sum = 0, the board is in a <em>balanced P-position</em> (winning for the previous mover). When Nim-sum &gt; 0, you can always make it 0!
+              </div>
+            </div>
+
+            <!-- Bitwise Table -->
+            <div class="bitwise-table-wrapper">
+              <table class="bitwise-table">
+                <thead>
+                  <tr>
+                    <th>Heap</th>
+                    <th>Coins</th>
+                    <th>Bit 3 (8)</th>
+                    <th>Bit 2 (4)</th>
+                    <th>Bit 1 (2)</th>
+                    <th>Bit 0 (1)</th>
+                    <th>Grundy G(k)</th>
+                  </tr>
+                </thead>
+                <tbody id="bitwise-table-body">
+                  <!-- Populated by NimUI -->
+                </tbody>
+                <tfoot>
+                  <tr id="parity-row" class="total-row">
+                    <!-- Populated by NimUI -->
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- AI Move Explanation Card -->
+            <div id="ai-explanation-card" class="ai-explanation-box">
+              <div class="ai-explanation-header">
+                <span class="text-gold" style="font-size: 0.9rem; font-weight: 700;">🧠 AI Strategy Breakdown</span>
+                <span class="badge badge-teal">Bouton Theorem</span>
+              </div>
+              <div id="ai-explanation-text" class="ai-explanation-text">
+                <em>Captain Grundy is observing the waters. Once the AI makes a move, the mathematical XOR rationale and Grundy reduction will be displayed here.</em>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ==================== RIGHT SIDEBAR ==================== -->
+        <aside class="gameplay-sidebar">
+          
+          <!-- AI Opponent Status Card -->
+          <div class="ai-opponent-card glass-panel">
+            <div class="ai-portrait-frame">
+              <svg class="ai-portrait-svg" viewBox="0 0 24 24" fill="none" stroke="#f5d76e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="5"></circle>
+                <path d="M20 21a8 8 0 1 0-16 0"></path>
+                <line x1="8" y1="7" x2="16" y2="7"></line>
+                <circle cx="9" cy="9" r="1" fill="#f5d76e"></circle>
+                <circle cx="15" cy="9" r="1" fill="#f5d76e"></circle>
+              </svg>
+              <div id="ai-pulse-dot" class="ai-pulse-dot"></div>
+            </div>
+            <div class="ai-profile-meta">
+              <h4>Captain Grundy</h4>
+              <div class="ai-status-indicator">
+                <span>Status:</span>
+                <span id="ai-mood-status" class="text-teal">Ready for Duel</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Tutor Chat Assistant -->
+          <div class="tutor-card glass-panel">
+            <div class="tutor-header">
+              <div class="tutor-header-title">
+                <span>🧭</span>
+                <strong>NIM AI TUTOR</strong>
+              </div>
+              <span class="badge badge-gold">Interactive</span>
+            </div>
+
+            <!-- Suggested Question Chips -->
+            <div id="quick-prompts-container" class="tutor-quick-prompts">
+              <button class="prompt-chip">What is Nim Game?</button>
+              <button class="prompt-chip">Explain XOR operation.</button>
+              <button class="prompt-chip">What is Nim-sum?</button>
+              <button class="prompt-chip">Why did AI remove these coins?</button>
+              <button class="prompt-chip">Explain Grundy numbers.</button>
+              <button class="prompt-chip">How can I win against AI?</button>
+              <button class="prompt-chip">Explain the last move.</button>
+            </div>
+
+            <!-- Chat Stream -->
+            <div id="tutor-messages-stream" class="tutor-messages">
+              <!-- Populated by NimTutor / NimUI -->
+            </div>
+
+            <!-- Chat Input Bar -->
+            <div class="tutor-input-bar">
+              <input type="text" id="tutor-input" class="tutor-input-field" placeholder="Ask about XOR, Grundy, or advice...">
+              <button id="tutor-send-btn" class="btn btn-primary" style="padding: 8px 16px;">
+                <span>Send</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Move History Log Card -->
+          <div class="history-card glass-panel">
+            <div class="history-card-header">
+              <h4 style="font-size: 0.95rem;">📜 Move History</h4>
+              <span class="text-muted" style="font-size: 0.75rem;">Old ➔ New Nim-sum</span>
+            </div>
+            <div id="history-list" class="history-list">
+              <!-- Populated by NimUI -->
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         MODAL: NEW GAME / CUSTOMIZE HEAPS
+         ====================================================================== -->
+    <div id="modal-new-game" class="modal-overlay">
+      <div class="modal-card">
+        <button id="modal-close-new-game" class="modal-close-btn">&times;</button>
+        <div class="modal-header">
+          <h2>⚔️ Configure New Challenge</h2>
+          <p class="text-muted">Choose your pirate fleet configuration and difficulty.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          <!-- Presets -->
+          <div>
+            <label style="font-size: 0.85rem; color: var(--gold-light); display: block; margin-bottom: 8px;">Preset Configurations</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button class="btn btn-secondary preset-btn active" data-heaps="3, 4, 5, 2">Pirate's Fleet (3, 4, 5, 2)</button>
+              <button class="btn btn-secondary preset-btn" data-heaps="3, 4, 5">Classic (3, 4, 5)</button>
+              <button class="btn btn-secondary preset-btn" data-heaps="1, 3, 5, 7">Seven Seas (1, 3, 5, 7)</button>
+              <button class="btn btn-secondary preset-btn" data-heaps="2, 3, 4">Skirmish (2, 3, 4)</button>
+            </div>
+          </div>
+
+          <!-- Custom Heaps Input -->
+          <div>
+            <label for="input-heap-custom" style="font-size: 0.85rem; color: var(--gold-light); display: block; margin-bottom: 6px;">Custom Heap Sizes (comma-separated)</label>
+            <input type="text" id="input-heap-custom" class="tutor-input-field" value="3, 4, 5, 2" style="width: 100%;">
+          </div>
+
+          <!-- Starting Player -->
+          <div>
+            <label for="select-start-player" style="font-size: 0.85rem; color: var(--gold-light); display: block; margin-bottom: 6px;">Who Takes the First Move?</label>
+            <select id="select-start-player" class="tutor-input-field" style="width: 100%; cursor: pointer;">
+              <option value="human">Human Captain (You)</option>
+              <option value="ai">Captain Grundy (AI)</option>
+            </select>
+          </div>
+
+          <!-- AI Strategy Difficulty -->
+          <div>
+            <label for="select-difficulty" style="font-size: 0.85rem; color: var(--gold-light); display: block; margin-bottom: 6px;">AI Difficulty Level</label>
+            <select id="select-difficulty" class="tutor-input-field" style="width: 100%; cursor: pointer;">
+              <option value="optimal">Grand Admiral (100% Mathematically Optimal)</option>
+              <option value="tactical">Corsair (85% Optimal, 15% Casual)</option>
+              <option value="casual">Apprentice Buccaneer (60% Optimal - Practice Mode)</option>
+            </select>
+          </div>
+
+          <div style="margin-top: 10px; display: flex; justify-content: flex-end; gap: 12px;">
+            <button id="btn-start-custom-game" class="btn btn-primary" style="width: 100%; padding: 14px;">
+              <span>LAUNCH NEW GAME ⚓</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         MODAL: GAME OVER / VICTORY & DEFEAT
+         ====================================================================== -->
+    <div id="modal-game-over" class="modal-overlay">
+      <div class="modal-card" style="text-align: center;">
+        <div id="game-over-chest-burst" class="game-over-chest-burst">
+          <svg viewBox="0 0 100 100" width="100" height="100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="4"/>
+            <polygon points="50,15 62,38 88,42 69,60 74,85 50,72 26,85 31,60 12,42 38,38" fill="#f5d76e"/>
+          </svg>
+        </div>
+
+        <h2 id="game-over-title" class="victory-title">VICTORY AT SEA!</h2>
+        <p id="game-over-subtitle" class="text-muted" style="margin-top: 6px;">You outsmarted the AI and claimed the Pirate's Treasure!</p>
+
+        <div class="game-over-stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Winner</div>
+            <div id="game-over-winner" class="stat-value">Human</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Moves</div>
+            <div id="game-over-moves" class="stat-value">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Duration</div>
+            <div id="game-over-duration" class="stat-value">0s</div>
+          </div>
+        </div>
+
+        <div id="game-over-explanation" class="ai-explanation-box" style="text-align: left; margin-bottom: 20px;">
+          <!-- Populated by NimUI -->
+        </div>
+
+        <div style="display: flex; gap: 14px; justify-content: center;">
+          <button id="btn-play-again" class="btn btn-primary" style="padding: 12px 28px;">
+            <span>🔄 Play Again</span>
+          </button>
+          <button id="btn-game-over-new-game" class="btn btn-secondary" style="padding: 12px 28px;">
+            <span>⚙️ Change Heaps</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/tutor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
